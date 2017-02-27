@@ -29,4 +29,6 @@ class CommandDispatcherBase(cmd.Cmd):
 
 class CommandDispatcher(CommandDispatcherBase):
     def do_msg(self, line):
+        message = '\msg %s' % line
+        self._interface._msg_client.send_msg(message)
         self._interface.add_message('You', line)

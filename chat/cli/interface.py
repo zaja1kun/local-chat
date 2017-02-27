@@ -59,6 +59,7 @@ class ChatInterface(object):
 
     def run(self):
         try:
+            self._start_program_logics()
             self._main_loop.run()
         except KeyboardInterrupt:
             self._stop_program_logics()
@@ -66,6 +67,9 @@ class ChatInterface(object):
     def stop(self):
         self._stop_program_logics()
         self._stop_main_loop()
+
+    def _start_program_logics(self):
+        pass
 
     def _stop_program_logics(self):
         pass
@@ -80,10 +84,14 @@ class ChatInterface(object):
 
     def add_client(self, client):
         text = ' %s' % client
-        self._connected_clients.append(urwid.Text(text))
+        if text not in (item.text for item in self._connected_clients):
+            self._connected_clients.append(urwid.Text(text))
 
     def remove_client(self, client):
         try:
-            self._connected_clients.remove(client)
+            text = ' %s' % client
+            client_pos = [
+                item.text for item in self._connected_clients].index(text)
+            del self._connected_clients[client_pos]
         except ValueError:
             pass
