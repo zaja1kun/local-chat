@@ -1,8 +1,7 @@
-import urwid
-from urwid import CENTER
 import time
+import urwid
 
-from chat.commands import CommandDispatcher
+from chat.cli.commands import CommandDispatcher
 
 
 class _PatchedEdit(urwid.Edit):
@@ -22,16 +21,25 @@ class _PatchedEdit(urwid.Edit):
 
 
 class ChatInterface(object):
+    _palette = [
+        ('body', 'black', 'light gray', 'standout'),
+        ('border', 'black', 'dark blue'),
+        ('shadow', 'white', 'black'),
+        ('selectable', 'black', 'dark cyan'),
+        ('focus', 'white', 'dark blue', 'bold'),
+        ('focustext', 'light gray', 'dark blue'),
+    ]
+
     def __init__(self):
         self._messages = []
         self._connected_clients = []
-        self._main_loop = urwid.MainLoop(self._init_interface())
+        self._main_loop = urwid.MainLoop(self._init_interface(), self._palette)
         self._cmd_dispatcher = CommandDispatcher(self)
 
     def _init_interface(self):
         """Returns main interface frame."""
         header = urwid.LineBox(
-            urwid.Text('Local Chat by Yury Zaitsau, 2017', align=CENTER))
+            urwid.Text('Local Chat by Yury Zaitsau, 2017', align=urwid.CENTER))
         body = urwid.Columns([
             (urwid.LineBox(urwid.ListBox(self._messages), title="Chat history")),
             ('fixed', 20, urwid.LineBox(urwid.ListBox(self._connected_clients), title="Clients online")),
